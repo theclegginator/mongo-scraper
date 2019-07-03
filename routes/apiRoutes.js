@@ -34,7 +34,9 @@ app.get("/scrape", function(req, res) {
 
       $("p.mt-10").each(function(i, element) {
         let summary = $(this).text();
-        // result[i].summary = $(this).text();
+        // news articles have text ending with the word 'read'. Let's remove this:
+        summary = summary.split("Read");
+        summary = summary[0];
 
         // push all the summaries off of the main page into a separate array to later merge.
         scrape2.push(summary);
