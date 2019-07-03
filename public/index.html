@@ -6,15 +6,26 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=DM+Serif+Display|Playfair+Display&display=swap" rel="stylesheet">
     <title>MongoScraper - Japanese News</title>
   </head>
   <body>
-    <h1>Mongo Scraper - Japanese News Articles</h1>
+    <img class="bg" src="images/news-bg-hero.jpg">
     <div id="wrapper">
       <div class="container">
+        <div class="text-center">
+          <h1>Mongo Scraper - Japanese News Articles</h1>
+          <button id="scrapeButton" type="button" class="btn btn-primary">Check for the Latest Stories</button>
+        </div>
       <div id="articles"></div>
     </div>
     </div>
+    <nav class="container-fluid-nav text-center navbar-dark bg-dark footer">
+        <span id="footer-text" class="navbar-text">
+            MongoScraper - Japanese News
+        </span>
+    </nav>
 
 <!-- Modal -->
 <div class="modal fade" id="notesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -34,10 +45,6 @@
     </div>
   </div>
 </div>
-
-<!-- <div id="noteAdded" class="alert alert-success" role="alert">
-  Note successfully added!
-</div> -->
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

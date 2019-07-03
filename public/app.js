@@ -1,19 +1,41 @@
-// Grab the articles as a json
-$.getJSON("/articles", function(data) {
-  // For each one
-  for (var i = 0; i < data.length; i++) {
-    // Display the apropos information on the page
-    $("#articles").append(`
-    <div data-id="${data[i]._id}" style="margin-bottom:30px;">
-      <h3>${data[i].title}</h3>
-      <p>${data[i].summary}</p>
-      <p><a href="${data[i].link}">Read Article</a></p>
-      <button type="button" class="addNote btn btn-primary" style="margin-right: 10px;">Add a Note</button>
-      <button type="button" class="viewNote btn btn-success">View Notes</button>
-    </div>
-    `);
+$(document).ready(function(){
+  // pull the articles from the database. This can be done as soon as the page loads.
+  loadArticles();
+
+  function loadArticles() {
+    $("#articles").empty();
+    $.getJSON("/articles", function(data) {
+      // For each one
+      for (var i = 0; i < data.length; i++) {
+        // Display the apropos information on the page
+        $("#articles").prepend(`
+        <div data-id="${data[i]._id}" style="margin-bottom:30px;">
+          <h3>${data[i].title}</h3>
+          <p>${data[i].summary}</p>
+          <p><a href="${data[i].link}">Read Article</a></p>
+          <button type="button" class="addNote btn btn-primary" style="margin-right: 10px;">Add a Note</button>
+          <button type="button" class="viewNote btn btn-success">View Notes</button>
+        </div>
+        <hr>
+        `);
+      }
+    });
   }
-});
+
+  $("#scrapeButton").on("click", function () {
+    // perform a new data scrape whenever the button is clicked by a user
+    $.ajax({
+      method: "GET",
+      url: "/scrape",
+    })
+      // With that done
+      .then(function(data) {
+        // Log the response
+        console.log(data);
+        loadArticles();
+      });
+    
+  })
 
 // When the user clicks the view note section
 $(document).on("click", ".viewNote", function() {
@@ -117,4 +139,6 @@ $(document).on("click", "#savenote", function() {
   $("#titleinput").val("");
   $("#bodyinput").val("");
   $("#notesModal").modal('hide');
+});
+
 });
