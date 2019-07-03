@@ -19,8 +19,8 @@ app.use(express.static("public"));
 
 // Connect to the Mongo DB
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
-// "mongodb://localhost/unit18Populater"
+// mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+mongoose.connect(MONGODB_URI);
 
 require("./routes/apiRoutes")(app);
 
