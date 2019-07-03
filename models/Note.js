@@ -11,6 +11,10 @@ var NoteSchema = new Schema({
   body: {
     type: String,
     required: true
+  },
+  articleId: {
+    type: String,
+    required: true 
   }
 });
 

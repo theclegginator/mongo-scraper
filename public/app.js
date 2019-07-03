@@ -4,48 +4,91 @@ $.getJSON("/articles", function(data) {
   for (var i = 0; i < data.length; i++) {
     // Display the apropos information on the page
     $("#articles").append(`
-    <div data-id="${data[i]._id}">
-    <h3>${data[i].title}</h3>
-    <p>${data[i].summary}</p>
-    <p><a href="${data[i].link}">Read Article</a></p>
+    <div data-id="${data[i]._id}" style="margin-bottom:30px;">
+      <h3>${data[i].title}</h3>
+      <p>${data[i].summary}</p>
+      <p><a href="${data[i].link}">Read Article</a></p>
+      <button type="button" class="addNote btn btn-primary" style="margin-right: 10px;">Add a Note</button>
+      <button type="button" class="viewNote btn btn-success">View Notes</button>
     </div>
     `);
   }
 });
 
+// When the user clicks the view note section
+$(document).on("click", ".viewNote", function() {
+  // get the mongo ID for the item
+  let thisId = $(this).parent().attr("data-id");
+  refreshNotes(thisId);
+});
 
-// Whenever someone clicks a p tag
-$(document).on("click", "p", function() {
-  // Empty the notes from the note section
-  $("#notes").empty();
-  // Save the id from the p tag
-  var thisId = $(this).attr("data-id");
-
+function refreshNotes (thisId) {
+  let noNotes = false;
+  $("#notesContent").empty();
+  $("#notesModal").modal();
+  
   // Now make an ajax call for the Article
   $.ajax({
     method: "GET",
-    url: "/articles/" + thisId
+    url: "/notes/" + thisId
   })
     // With that done, add the note information to the page
     .then(function(data) {
-      console.log(data);
-      // The title of the article
-      $("#notes").append("<h2>" + data.title + "</h2>");
-      // An input to enter a new title
-      $("#notes").append("<input id='titleinput' name='title' >");
-      // A textarea to add a new note body
-      $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
-      // A button to submit a new note, with the id of the article saved to it
-      $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
-
-      // If there's a note in the article
-      if (data.note) {
-        // Place the title of the note in the title input
-        $("#titleinput").val(data.note.title);
-        // Place the body of the note in the body textarea
-        $("#bodyinput").val(data.note.body);
+      if (data === undefined || data.length == 0) {
+        noNotes = true;
+        $("#notesContent").append("<p style='color: red'>No notes exist for this article. Feel free to add some!</p>");
+        // if API call returns no results, the article does not have any existing notes
+      }
+      // if there were notes in the API call, create a section in the modal for each note with a delete button
+      if (!noNotes) {
+        for (let i = 0; i < data.length; i++) {
+          $("#notesContent").append(`
+          <div data-id="${data[i]._id}" data-article-id="${data[i].articleId}">
+            <h4>${data[i].title}</h4>
+            <p>${data[i].body}</p>
+            <button type="button" class="deleteNote btn btn-danger">Delete Note</button>
+            <hr>
+          </div>
+          `)
+        }
       }
     });
+}
+
+// Delete note event
+$(document).on("click", ".deleteNote", function() {
+  let thisId = $(this).parent().attr("data-id");
+  let thisArticleId = $(this).parent().attr("data-article-id");
+  $.ajax({
+    method: "POST",
+    url: "/notes/delete/" + thisId
+  })
+    // With that done, add the note information to the page
+    .then(function(data) {
+      // refresh the notes list after deleting
+      refreshNotes(thisArticleId);
+    })
+});
+
+
+// when the add note button is clicked, build out a small form in the modal
+$(document).on("click", ".addNote", function() {
+  // Empty the notes from the note section
+  $("#notesContent").empty();
+  $("#notesModal").modal();
+  // Save the id from the p tag
+  var articleId = $(this).parent().attr("data-id");
+  $("#notesContent").append(`
+    <div>
+    <h3>Add a new Note</h3>
+    <input id="titleinput" name='title' class="form-control" type="text" placeholder="Note Title">
+    <div class="form-group" style="padding-top: 20px";>
+      <textarea id='bodyinput' name='body' class="form-control" rows="3" placeholder="Note Content"></textarea>
+    </div> 
+    <button type="button" class="btn btn-primary" data-id='${articleId}' id='savenote'>Save Note</button>
+    </div>
+  `)
+
 });
 
 // When you click the savenote button
@@ -56,11 +99,11 @@ $(document).on("click", "#savenote", function() {
   // Run a POST request to change the note, using what's entered in the inputs
   $.ajax({
     method: "POST",
-    url: "/articles/" + thisId,
+    url: "/notes/",
     data: {
-      // Value taken from title input
+      // append the articleId to the note so we know which ones are saved to the article
+      articleId: thisId,
       title: $("#titleinput").val(),
-      // Value taken from note textarea
       body: $("#bodyinput").val()
     }
   })
@@ -68,11 +111,10 @@ $(document).on("click", "#savenote", function() {
     .then(function(data) {
       // Log the response
       console.log(data);
-      // Empty the notes section
-      $("#notes").empty();
     });
 
   // Also, remove the values entered in the input and textarea for note entry
   $("#titleinput").val("");
   $("#bodyinput").val("");
+  $("#notesModal").modal('hide');
 });
