@@ -12,22 +12,21 @@ The following Node modules are used (and are included in the package.json file):
 * cheerio - a convenient tool for structuing scraping parameters
 
 ### App Demo
-* In the GIF below, a sample user views existing burgers and burgers that have already been eaten.
-* They then add a brand new burger to the database and eat said burger, moving it to the other section of the page.
+* In the GIF below, a sample user scrapes for the latest articles and automatically add them to the database.
+* To accomplish this, cheerio is used with an axios call to pull the latest headlines from JapaneseToday.com. 
+* An article title, URL, and summary are all grabbed from the site and reformatted into bootstrap HTML here on the main page. 
+* A JSON object containing the above information is preserved in the Mongo Database via Mongoose.
   
 ![Screenshot](README-images/scraping.gif)
 
-### Menu Section - Existing Burgers
-* This section of the page shows all existing burgers that have not been eaten. 
-* This is pull from a jQuery AJAX call.
-![Screenshot](README_images/Menu.png)
+### Adding Notes
+* Clicking this button will produce a modal that will allow the user to add a note to an article he or she is interested in. 
+* These notes are tied to an article ID in the database so they can be reviewed (or removed) late.
 
-### Add a Burger - Creating a new SQL Entry
-* This section of the page allows the user to add a new burger.
-* The burger will be coerced into the SQL schema via the ORM functions.
-![Screenshot](README_images/New-burger.png)
+![Screenshot](README-images/adding-note.gif)
 
-### Burgers Already Enjoyed - Burgers that have been updated
-* This section of the page shows burgers that were prevously created and "devoured".
-* These burgers display here based on a boolean value in the database.
-![Screenshot](README_images/eaten.png)
+### Deleting Notes
+* Clicking this button will allow the user to delete existing notes/comments on an entry.
+* The app will check to ensure there are notes to display. If none exist for the article in question, a special message will appear asking the user to first create a note.
+
+![Screenshot](README-images/delete-note.gif)
