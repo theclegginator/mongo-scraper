@@ -15,7 +15,7 @@ The following Node modules are used (and are included in the package.json file):
 * In the GIF below, a sample user views existing burgers and burgers that have already been eaten.
 * They then add a brand new burger to the database and eat said burger, moving it to the other section of the page.
   
-![Screenshot](README_images/burger-demo.gif)
+![Screenshot](README-images/scraping.gif)
 
 ### Menu Section - Existing Burgers
 * This section of the page shows all existing burgers that have not been eaten. 
